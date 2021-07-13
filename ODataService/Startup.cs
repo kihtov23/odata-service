@@ -32,11 +32,18 @@ namespace ODataService
         {
             var builder = new ODataConventionModelBuilder(app.ApplicationServices);
             builder.EntitySet<Product>("Products");
+
+            builder.Function("GetByName")
+                .ReturnsCollectionFromEntitySet<Product>("Products")
+                .Parameter<string>("Name");
+
             app.UseMvc(routeBuilder =>
             {
                 routeBuilder.EnableDependencyInjection();
                 routeBuilder.Select().Expand().Filter().OrderBy().MaxTop(100).Count();
                 routeBuilder.MapODataServiceRoute("ODataRoute", "odata", builder.GetEdmModel());
+
+                
             });
         }
     }
